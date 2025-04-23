@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add Lead</title>
+  <link rel="stylesheet" href="style-addlead.css" />
+</head>
+<body>
+  <h1>Add New Lead</h1>
+  <button onclick="window.location.href='dashboard.html'">Back to Dashboard</button>
+  <form id="addLeadForm">
+    <input type="text" name="customer_name" placeholder="Customer Name" required />
+    <input type="email" name="email" placeholder="Email" required />
+    <input type="text" name="mobile_number" placeholder="Mobile Number" required />
+    <input type="text" name="project_name" placeholder="Project Name" required />
+    <input type="text" name="budget" placeholder="Budget" required />
+    <input type="text" name="preferred_area" placeholder="Preferred Area" required />
+    <input type="text" name="team_leader" placeholder="Team Leader" required />
+    <input type="text" name="assigned_to" placeholder="Assigned To" required />
+    
+    <label>Last Contact Date:</label>
+    <input type="date" name="last_contacted_date" required />
+
+    <label>Next Follow-Up Date:</label>
+    <input type="date" name="next_followup_date" required />
+
+    <textarea name="comments" placeholder="Comments" required></textarea>
+
+    <label for="deal_status">Deal Status:</label>
+    <select name="deal_status" required>
+      <option value="">Select Status</option>
+      <option value="Not Contacted">Not Contacted</option>
+      <option value="Follow-up">Follow-up</option>
+      <option value="Site Visit">Site Visit</option>
+      <option value="Closed">Closed</option>
+      <option value="Dropped">Dropped</option>
+    </select>
+
+    <label for="interest_level">Interest Level:</label>
+    <select name="interest_level" required>
+      <option value="">Select Interest</option>
+      <option value="Red">Red</option>
+      <option value="Yellow">Yellow</option>
+      <option value="Green">Green</option>
+    </select>
+
+    <input type="text" name="property_type" placeholder="Property Type" required />
+
+    <label>
+      <input type="checkbox" name="site_visit_done" />
+      Site Visit Done
+    </label>
+
+    <button type="submit">Submit</button>
+  </form>
+
+  <p id="statusMessage"></p>
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Script -->
+  <script src="addlead.js"></script>
+</body>
+</html>

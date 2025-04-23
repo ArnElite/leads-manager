@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>All Leads</title>
+  <link rel="stylesheet" href="style-leads.css" />
+  
+</head>
+<body>
+  <div class="container">
+    <div class="top-bar">
+      <h1>All Leads</h1>
+      <div class="user-actions">
+        <span id="user-name"></span>
+        <button onclick="logout()">Logout</button>
+        <button onclick="goBack()">Back to Dashboard</button>
+      </div>
+    </div>
+    <div class="sorting-buttons">
+      <button onclick="sortByArea()">Sort by Area</button>
+      <button onclick="sortByFollowUp()">Sort by Follow-Up Date</button>
+    </div>
+    <div class="table-container">
+      <table id="leadsTable">
+        <thead>
+          <tr>
+            <tr id="filter-row">
+              <th><input type="text" id="filter-name" placeholder="Filter by Name"></th>
+              <th><input type="text" id="filter-email" placeholder="Email"></th>
+              <th><input type="text" id="filter-mobile" placeholder="Mobile"></th>
+              <!-- Repeat for other columns or leave blank -->
+              <th colspan="13"></th> <!-- Adjust colspan to match remaining columns -->
+            </tr>
+            <th>Customer Name</th>
+            <th>Email</th>
+            <th>Mobile</th>
+            <th>Project Name</th>
+            <th>Budget</th>
+            <th>Preferred Area</th>
+            <th>Team Leader</th>
+            <th>Assigned To</th>
+            <th>Last Contacted</th>
+            <th>Next Follow-Up</th>
+            <th>Comments</th>
+            <th>Deal Status</th>
+            <th>Interest Level</th>
+            <th>Property Type</th>
+            <th>Site Visit Done</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="leadsList">
+          <!-- Leads will be populated here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://fxolvqfayvrxtkwjohtv.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZ4b2x2cWZheXZyeHRrd2pvaHR2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ2OTgxOTgsImV4cCI6MjA2MDI3NDE5OH0.lK4FzEiSfP9tLCTcOlVVeEjk_bPJp01lRie0hkn-JN8';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const { data: { user }, error: sessionError } = await supabase.auth.getUser();
+
+      if (sessionError || !user) {
+        alert('Session expired. Please log in again.');
+        window.location.href = 'login.html';
+        return;
+      }
+
+      const email = user.email;
+
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('name')
+        .eq('email', email)
+        .single();
+
+      if (profileError || !profileData) {
+        alert('Failed to fetch user profile.');
+        return;
+      }
+
+      document.getElementById('user-name').textContent = profileData.name;
+
+      loadLeads();
+    });
+
+    async function loadLeads() {
+      const { data: leads, error } = await supabase
+        .from('leads')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      const leadsList = document.getElementById('leadsList');
+      leadsList.innerHTML = '';
+
+      if (error) {
+        console.error('Error loading leads:', error.message);
+        leadsList.innerHTML = '<tr><td colspan="16">Failed to load leads.</td></tr>';
+        return;
+      }
+
+      if (leads.length === 0) {
+        leadsList.innerHTML = '<tr><td colspan="16">No leads available.</td></tr>';
+        return;
+      }
+
+      leads.forEach((lead) => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${lead.customer_name || 'Unnamed'}</td>
+          <td>${lead.email || 'N/A'}</td>
+          <td>${lead.mobile_number || 'N/A'}</td>
+          <td>${lead.project_name || 'N/A'}</td>
+          <td>${lead.budget || 'N/A'}</td>
+          <td>${lead.preferred_area || 'N/A'}</td>
+          <td>${lead.team_leader || 'N/A'}</td>
+          <td>${lead.assigned_to || 'N/A'}</td>
+          <td>${lead.last_contacted_date || 'N/A'}</td>
+          <td>${lead.next_followup_date || 'N/A'}</td>
+          <td>${lead.comments || 'N/A'}</td>
+          <td>${lead.deal_status || 'N/A'}</td>
+          <td>${lead.interest_level || 'N/A'}</td>
+          <td>${lead.property_type || 'N/A'}</td>
+          <td>${lead.site_visit_done ? 'Yes' : 'No'}</td>
+          <td>
+            <button class="action-btn edit-btn" onclick="editLead('${lead.id}')">Edit</button>
+            <button class="action-btn delete-btn" onclick="deleteLead('${lead.id}')">Delete</button>
+          </td>
+        `;
+        leadsList.appendChild(tr);
+      });
+    }
+
+    function logout() {
+      supabase.auth.signOut().then(() => {
+        window.location.href = 'login.html';
+      });
+    }
+
+    function goBack() {
+      window.location.href = 'dashboard.html';
+    }
+
+    function editLead(id) {
+      window.location.href = `edit.html?id=${id}`;
+    }
+
+    async function deleteLead(id) {
+      const confirmDelete = confirm("Are you sure you want to delete this lead?");
+      if (!confirmDelete) return;
+
+      const { error } = await supabase
+        .from('leads')
+        .delete()
+        .eq('id', id);
+
+      if (error) {
+        alert('Failed to delete lead.');
+        console.error(error);
+      } else {
+        alert('Lead deleted successfully.');
+        loadLeads();
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit Lead</title>
+</head>
+<body>
+  <h1>Edit Lead</h1>
+
+  <form id="editLeadForm">
+    <label for="customer-name">Customer Name</label>
+    <input type="text" id="customer-name" name="customer_name" required />
+    
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" required />
+    
+    <label for="mobile-number">Mobile Number</label>
+    <input type="tel" id="mobile-number" name="mobile_number" required />
+    
+    <label for="project-name">Project Name</label>
+    <input type="text" id="project-name" name="project_name" />
+
+    <label for="budget">Budget</label>
+    <input type="text" id="budget" name="budget" />
+
+    <label for="preferred-area">Preferred Area</label>
+    <input type="text" id="preferred-area" name="preferred_area" />
+
+    <label for="team-leader">Team Leader</label>
+    <input type="text" id="team-leader" name="team_leader" />
+
+    <label for="assigned-to">Assigned To</label>
+    <input type="text" id="assigned-to" name="assigned_to" />
+
+    <label for="last-contacted-date">Last Contacted Date</label>
+    <input type="date" id="last-contacted-date" name="last_contacted_date" />
+
+    <label for="next-followup-date">Next Follow-up Date</label>
+    <input type="date" id="next-followup-date" name="next_followup_date" />
+
+    <label for="comments">Comments</label>
+    <textarea id="comments" name="comments"></textarea>
+
+    <label for="deal_status">Deal Status</label>
+    <select id="deal_status" required>
+        <option value="Not Contacted">Not Contacted</option>
+        <option value="Follow-up">Follow-up</option>
+        <option value="Site Visit">Site Visit</option>
+        <option value="Closed">Closed</option>
+        <option value="Dropped">Dropped</option>
+      </select>
+
+    <label for="interest-level">Interest Level</label>
+    <select id="interest-level" name="interest_level">
+      <option value="Red">Red (Low)</option>
+      <option value="Yellow">Yellow (Medium)</option>
+      <option value="Green">Green (High)</option>
+    </select>
+
+    <label for="property-type">Property Type</label>
+    <input type="text" id="property-type" name="property_type" />
+
+    <label for="site-visit-done">Site Visit Done</label>
+    <input type="checkbox" id="site-visit-done" name="site_visit_done" />
+
+    <button type="submit">Save Changes</button>
+  </form>
+
+  <p id="error" style="color:red;"></p>
+
+  <!-- Load Supabase JS FIRST -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- Load your custom logic AFTER Supabase is available -->
+  <script src="edit.js"></script>
+</body>
+</html>
