@@ -1,4 +1,4 @@
-[Lead Management System]
+**Lead Management System**
 A simple and secure lead management system designed for real estate business operations.  
 Built using Supabase for backend services and plain HTML, CSS, and JavaScript for the frontend.  
 Features  
